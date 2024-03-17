@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HomeWork</title>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-4">
+  <h1 class="mb-4">Расписание занятий</h1>
+  <div id="lessons-list" class="row"></div>
+</div>
+
+<script>
+  const lessonsData = [
+    { title: "Pool", time: "10:00", maxParticipants: 15, currentParticipants: 10, enrolled: false },
+    { title: "Cardio", time: "12:00", maxParticipants: 20, currentParticipants: 20, enrolled: false },
+    { title: "Powerlifting", time: "15:00", maxParticipants: 25, currentParticipants: 22, enrolled: false }
+  ];
+
+  function displayLessons() {
+    const lessonsList = document.getElementById("lessons-list");
+    lessonsList.innerHTML = "";
+
+    lessonsData.forEach(lesson => {
+      const card = `
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">${lesson.title}</h5>
+              <p class="card-text">Time: ${lesson.time}</p>
+              <p class="card-text">Participants: ${lesson.currentParticipants}/${lesson.maxParticipants}</p>
+              <div id="enrollment-${lesson.title}">
+                ${!lesson.enrolled && lesson.currentParticipants < lesson.maxParticipants ? 
+                  `<button class="btn btn-primary mr-2" onclick="enroll('${lesson.title}')">Записаться</button>` : 
+                  `<button class="btn btn-primary mr-2" disabled>${lesson.enrolled ? "Записан" : "Мест нет"}</button>`
+                }
+                ${lesson.enrolled ? `<button class="btn btn-danger" onclick="cancelEnrollment('${lesson.title}')">Отменить запись</button>` : ``}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      lessonsList.innerHTML += card;
+    });
+  }
+
+  function enroll(lessonTitle) {
+    const lesson = lessonsData.find(lesson => lesson.title === lessonTitle);
+    if (lesson.currentParticipants < lesson.maxParticipants) {
+      lesson.currentParticipants++;
+      lesson.enrolled = true;
+      displayLessons();
+    }
+  }
+
+  function cancelEnrollment(lessonTitle) {
+    const lesson = lessonsData.find(lesson => lesson.title === lessonTitle);
+    lesson.currentParticipants--;
+    lesson.enrolled = false;
+    displayLessons();
+  }
+
+  window.onload = function() {
+    displayLessons();
+  };
+</script>
+
+</body>
+</html>
